@@ -1,3 +1,12 @@
-com\skillor\mcp\model\Bonus.class
-com\skillor\mcp\MockMcpServer.class
-com\skillor\mcp\model\Recharge.class
+com\demo\risk\Main.class
+com\demo\risk\mcp\RechargeMcpServer.class
+com\demo\risk\dao\RiskDetectLogDao.class
+com\demo\risk\dao\RechargeDao.class
+com\demo\risk\service\RiskDetectService.class
+com\demo\risk\dao\BonusDao.class
+com\demo\risk\dao\AccountStatusDao.class
+com\demo\risk\model\RiskResult.class
+com\demo\risk\service\DisposeService.class
+com\demo\risk\model\Recharge.class
+com\demo\risk\dao\AiChatLogDao.class
+com\demo\risk\model\Bonus.class

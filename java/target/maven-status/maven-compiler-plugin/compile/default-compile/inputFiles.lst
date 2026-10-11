@@ -1,3 +1,12 @@
-D:\code\SkillorMcp_in_OpenClaw\java\src\main\java\com\skillor\mcp\MockMcpServer.java
-D:\code\SkillorMcp_in_OpenClaw\java\src\main\java\com\skillor\mcp\model\Bonus.java
-D:\code\SkillorMcp_in_OpenClaw\java\src\main\java\com\skillor\mcp\model\Recharge.java
+D:\code\SkillorMcp_in_OpenClaw\java\src\main\java\com\demo\risk\dao\AccountStatusDao.java
+D:\code\SkillorMcp_in_OpenClaw\java\src\main\java\com\demo\risk\dao\AiChatLogDao.java
+D:\code\SkillorMcp_in_OpenClaw\java\src\main\java\com\demo\risk\dao\BonusDao.java
+D:\code\SkillorMcp_in_OpenClaw\java\src\main\java\com\demo\risk\dao\RechargeDao.java
+D:\code\SkillorMcp_in_OpenClaw\java\src\main\java\com\demo\risk\dao\RiskDetectLogDao.java
+D:\code\SkillorMcp_in_OpenClaw\java\src\main\java\com\demo\risk\Main.java
+D:\code\SkillorMcp_in_OpenClaw\java\src\main\java\com\demo\risk\mcp\RechargeMcpServer.java
+D:\code\SkillorMcp_in_OpenClaw\java\src\main\java\com\demo\risk\model\Bonus.java
+D:\code\SkillorMcp_in_OpenClaw\java\src\main\java\com\demo\risk\model\Recharge.java
+D:\code\SkillorMcp_in_OpenClaw\java\src\main\java\com\demo\risk\model\RiskResult.java
+D:\code\SkillorMcp_in_OpenClaw\java\src\main\java\com\demo\risk\service\DisposeService.java
+D:\code\SkillorMcp_in_OpenClaw\java\src\main\java\com\demo\risk\service\RiskDetectService.java
