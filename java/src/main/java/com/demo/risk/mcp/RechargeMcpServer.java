@@ -73,7 +73,10 @@ public class RechargeMcpServer {
             Object result;
             switch (method) {
                 case "initialize":
-                    result = toolResult("recharge-risk-mcp/1.0.0");
+                    result = initializeResult(req);
+                    break;
+                case "notifications/initialized":
+                    result = mapper.createObjectNode();
                     break;
                 case "tools/list":
                     result = toolsList();
@@ -101,25 +104,55 @@ public class RechargeMcpServer {
 
     private Object toolsList() {
         ArrayNode tools = mapper.createArrayNode();
-        tools.add(tool("detectRisk", "检测恶意充值并打分", "object"));
-        tools.add(tool("queryRecharges", "查询充值流水", "object"));
-        tools.add(tool("queryBonus", "查询赠送Token", "object"));
-        tools.add(tool("banUser", "封禁用户7天", "object"));
-        tools.add(tool("restrictBonus", "禁止领取赠送", "object"));
-        tools.add(tool("getAccountStatus", "查询账号状态", "object"));
+        tools.add(tool("detectRisk", "检测恶意充值并打分", new String[0], new String[0]));
+        tools.add(tool("queryRecharges", "查询充值流水", new String[0], new String[0]));
+        tools.add(tool("queryBonus", "查询赠送Token", new String[0], new String[0]));
+        tools.add(tool("banUser", "封禁用户7天", new String[]{"user_id", "reason"}, new String[]{"user_id"}));
+        tools.add(tool("restrictBonus", "禁止领取赠送", new String[]{"user_id"}, new String[]{"user_id"}));
+        tools.add(tool("getAccountStatus", "查询账号状态", new String[]{"user_id"}, new String[]{"user_id"}));
         ObjectNode root = mapper.createObjectNode();
         root.set("tools", tools);
         return root;
     }
 
-    private ObjectNode tool(String name, String desc, String type) {
+    private ObjectNode tool(String name, String desc, String[] fields, String[] required) {
         ObjectNode t = mapper.createObjectNode();
         t.put("name", name);
         t.put("description", desc);
         ObjectNode schema = mapper.createObjectNode();
-        schema.put("type", type);
+        schema.put("type", "object");
+        ObjectNode props = mapper.createObjectNode();
+        for (String f : fields) {
+            ObjectNode p = mapper.createObjectNode();
+            p.put("type", "string");
+            props.set(f, p);
+        }
+        schema.set("properties", props);
+        ArrayNode req = mapper.createArrayNode();
+        for (String r : required) {
+            req.add(r);
+        }
+        schema.set("required", req);
         t.set("inputSchema", schema);
         return t;
+    }
+
+    private ObjectNode initializeResult(ObjectNode req) {
+        String clientVersion = req.path("params").path("protocolVersion").asText(null);
+        String version = "2024-11-05";
+        if ("2025-03-26".equals(clientVersion) || "2025-06-18".equals(clientVersion)) {
+            version = clientVersion;
+        }
+        ObjectNode root = mapper.createObjectNode();
+        root.put("protocolVersion", version);
+        ObjectNode caps = mapper.createObjectNode();
+        caps.set("tools", mapper.createObjectNode());
+        root.set("capabilities", caps);
+        ObjectNode info = mapper.createObjectNode();
+        info.put("name", "recharge-risk");
+        info.put("version", "1.0.0");
+        root.set("serverInfo", info);
+        return root;
     }
 
     private Object toolsCall(ObjectNode params) throws Exception {
@@ -140,17 +173,26 @@ public class RechargeMcpServer {
                 return toolResult(mapper.writeValueAsString(list));
             }
             case "banUser": {
-                String uid = args.path("user_id").asText();
+                String uid = args.path("user_id").asText("").trim();
+                if (uid.isEmpty()) {
+                    throw new IllegalArgumentException("banUser requires user_id");
+                }
                 statusDao.updateStatus(uid, "banned", args.path("reason").asText("mcp ban"));
                 return toolResult("banned:" + uid);
             }
             case "restrictBonus": {
-                String uid = args.path("user_id").asText();
+                String uid = args.path("user_id").asText("").trim();
+                if (uid.isEmpty()) {
+                    throw new IllegalArgumentException("restrictBonus requires user_id");
+                }
                 statusDao.updateStatus(uid, "restricted", "bonus restricted");
                 return toolResult("restricted:" + uid);
             }
             case "getAccountStatus": {
-                String uid = args.path("user_id").asText();
+                String uid = args.path("user_id").asText("").trim();
+                if (uid.isEmpty()) {
+                    throw new IllegalArgumentException("getAccountStatus requires user_id");
+                }
                 return toolResult(statusDao.getStatus(uid));
             }
             default:
